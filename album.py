@@ -29,7 +29,7 @@ class Album:
         return list(self._years) # return a copy
     
     @property
-    def first_year(self) -> int:
+    def debut_year(self) -> int:
         """
         Returns the first (earliest) debut years
         """
