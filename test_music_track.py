@@ -8,7 +8,7 @@ import pytest
 from artist import Artist
 from album import Album
 from music_track import MusicTrack
-# from sedan import Sedan
+from song import Song
 # from truck import Truck
 # from garage import Garage
 
@@ -92,3 +92,48 @@ class TestMusicTrackAbstract:
                 Album("Beyond The Earth's End", True, [4080]),
                 290
             )
+
+
+# Unit testing for song.py
+class TestSong:
+    @pytest.fixture
+    def song(self):
+        return Song(
+            Artist("Da Lab", "V-pop"),
+            Album("Chilling Breeze", False, [2015, 2016, 2017, 2018]),
+            220,
+        )
+    
+    def test_play_time_formatted(self, song):
+        assert song.play_time_formatted() == "03:40"
+
+    def test_debut_year(self, song):
+        assert song.release_year == 2015
+
+    def test_duration_seconds(self, song):
+        assert song.duration_second == 220
+
+    def test_artist(self, song):
+        assert song.artist.name == "Da Lab"
+        assert song.artist.genre == "V-pop"
+
+    def test_album(self, song):
+        assert song.album.name == "Chilling Breeze"
+
+    def test_total_play_time(self, song):
+        assert song.total_play_time(2) == 440
+        assert song.total_play_time(5) == 1100
+
+    def test_str_contains_required_parts(self, song):
+        s = str(song)
+        assert "(Da Lab, V-pop)" in s
+        assert "Chilling Breeze" in s
+        assert "03:40" in s
+
+    def test_str_is_not_explicit(self, song):
+        s = str(song)
+        assert "explicit" not in s.lower()
+
+    def test_is_instance_of_song(self, song):
+        assert isinstance(song, MusicTrack)
+ 
