@@ -7,7 +7,7 @@ import pytest
 
 from artist import Artist
 from album import Album
-# from vehicle import Vehicle
+from music_track import MusicTrack
 # from sedan import Sedan
 # from truck import Truck
 # from garage import Garage
@@ -70,4 +70,25 @@ class TestAlbum:
         assert len(am.years) == 6
 
 
-        
+#  Unit testing for music_track.py and abstract contract
+class TestMusicTrackAbstract:
+    def test_music_track_cannot_be_directly_initialized(self):
+        """Music Track is abstract and should not be directly initialized"""
+        with pytest.raises(TypeError):
+            MusicTrack(
+                Artist("Thuan Nguyen", "Internation"),
+                Album("Harmonize Earth", True, [2040]),
+                300
+            )
+
+    def test_subclass_must_implement_total_play_time(self):
+        """A subclass that does not have total_play_time should not work"""
+        # This incomplete version should raise TypeError
+        with pytest.raises(TypeError):
+            class Incompletion(MusicTrack):
+                pass
+            Incompletion(
+                Artist("Nguyen Huu", "Beyondy"),
+                Album("Beyond The Earth's End", True, [4080]),
+                290
+            )
