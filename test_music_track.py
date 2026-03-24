@@ -9,12 +9,12 @@ from artist import Artist
 from album import Album
 from music_track import MusicTrack
 from song import Song
-# from truck import Truck
+from podcast import Podcast
 # from garage import Garage
 
 
 
-#  Unit Testing for artist.py
+#  Unit testing for artist.py
 class TestArtist:
     def test_constructor(self):
         m = Artist("BTS", "K-pop")
@@ -32,7 +32,7 @@ class TestArtist:
         assert str(m) == "Mrs.GREEN APPLE, J-pop"
 
 
-#  Unit Testing for album.py
+#  Unit testing for album.py
 class TestAlbum:
     def test_constructor(self):
         am = Album("Peace and Relaxation", True, [2020, 2021, 2022])
@@ -136,4 +136,69 @@ class TestSong:
 
     def test_is_instance_of_song(self, song):
         assert isinstance(song, MusicTrack)
+
+
+# Unit testing for podcast.py
+class TestPodcast:
+    @pytest.fixture
+    def joe(self):
+        return Podcast(
+            Artist("Joe Rogan", "Comedy"),
+            Album("The Joe Rogan Experience", True, [2009, 2010]),
+            9000,
+            is_explicit=True
+        )
+
+    @pytest.fixture
+    def sarah(self):
+        return Podcast(
+            Artist("Sarah Koenig", "Journalism"),
+            Album("Serial", False, [2014, 2015]),
+            5400,
+            is_explicit=False,
+        )
+    # Explicit
+    def test_is_explicit_true(self, joe):
+        assert joe.is_explicit is True
+
+    def test_podcast_explicit(self, joe):
+        assert joe.play_time_formatted() == "02:30:00"
+
+    def test_release_year_tundra(self, joe):
+        assert joe.release_year == 2009
+
+    def test_str_explicit(self, joe):
+        s = str(joe)
+        assert "(Joe Rogan, Comedy)" in s
+        assert "The Joe Rogan Experience" in s
+        assert "02:30:00" in s
+        assert "True" in s
+
+    
+    # Not explicit
+    def test_default_not_explicit(self, sarah):
+        assert sarah.is_explicit is False
+
+    def test_wheels_non_explicit(self, sarah):
+        assert sarah.play_time_formatted() == "01:30:00"
+
+    def test_release_year_serial(self, sarah):
+        assert sarah.release_year == 2014
+
+    def test_str_non_explicit(self, sarah):
+        s = str(sarah)
+        assert "(Sarah Koenig, Journalism)" in s
+        assert "Serial" in s
+        assert "01:30:00" in s
+        assert "False" in s
+
+
+    def test_how_far_with(self, joe):
+        assert joe.total_play_time(2) == 18000
+
+    def test_is_instance_of_music_track(self, joe):
+        assert isinstance(joe, MusicTrack)
+
+
+
  

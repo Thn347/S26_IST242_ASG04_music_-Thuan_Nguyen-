@@ -24,8 +24,9 @@ class Podcast(MusicTrack):
     # specifying the abstract method with podcast's condition
     def play_time_formatted(self) -> int:
         hours = self._duration_seconds // 3600
-        minutes = self._duration_seconds // 60
-        seconds = self._duration_seconds % 60
+        remaining = self._duration_seconds % 3600
+        minutes = remaining // 60
+        seconds = remaining % 60
         return f"{hours:02d}:{minutes:02d}:{seconds:02d}"
     
     # printing podcast
