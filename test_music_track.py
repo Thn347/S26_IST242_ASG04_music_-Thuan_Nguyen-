@@ -200,5 +200,59 @@ class TestPodcast:
         assert isinstance(joe, MusicTrack)
 
 
+# Unit testing for comparison and ordering functions
+class TestComparison:
+    @pytest.fixture
+    def song_2020(self):
+        return Song(
+            Artist("Holunolu", "Hawaii"),
+            Album("Hawaii festive", True, [2020, 2021]),
+            220,
+        )
+    
+    @pytest.fixture
+    def song_1995(self):
+        return Song(
+            Artist("Volca Halo", "Hawaii"),
+            Album("Summer eruption", False, [1995, 1996]),
+            245,
+        )
+    
+    @pytest.fixture
+    def podcast_2018(self):
+        return Podcast(
+            Artist("Ngo Kien Huy", "V-pop"),
+            Album("Dear, Vietnam", False, [2018, 2019, 2020]),
+            9000,
+        )
 
+    @pytest.fixture
+    def podcast_2020(self):
+        return Podcast(
+            Artist("YOASOBI", "J-pop"),
+            Album("Anime Shockwave", True, [2020, 2021, 2022]),
+            4500,
+        )
+
+    def test_lt(self, song_2020, song_1995):
+        assert song_1995 < song_2020
+
+    def test_not_lt_when_greater(self, song_2020, song_1995):
+        assert not (song_2020 < song_1995)
+
+    def test_eq_same_year(self, song_2020, podcast_2020):
+        assert song_2020 == podcast_2020
+
+    def test_not_eq_different_year(self, song_1995, song_2020):
+        assert song_1995 != song_2020
+
+    def test_gt(self, podcast_2020, podcast_2018):
+        assert podcast_2020 > podcast_2018
+
+    def test_sorted_order(self, song_1995, song_2020, podcast_2018):
+        vehicles = [song_1995, song_2020, podcast_2018]
+        result = sorted(vehicles)
+        assert result[0].release_year == 1995
+        assert result[1].release_year == 2018
+        assert result[2].release_year == 2020
  
