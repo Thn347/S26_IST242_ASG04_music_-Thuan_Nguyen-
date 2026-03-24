@@ -11,7 +11,7 @@ class Podcast(MusicTrack):
     def __init__(self,
                  artist: Artist,
                  album: Album,
-                 duration_seconds: float,
+                 duration_seconds: int,
                  is_explicit: bool = False # Additional attribution
     ):
         super().__init__(artist, album, duration_seconds)

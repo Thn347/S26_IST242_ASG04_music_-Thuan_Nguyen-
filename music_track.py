@@ -12,7 +12,7 @@ class MusicTrack(ABC):
     def __init__(self,
                  artist: Artist,
                  album: Album,
-                 duration_seconds: float):
+                 duration_seconds: int):
         self._artist = artist
         self._album = album
         self._duration_seconds = duration_seconds

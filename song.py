@@ -7,18 +7,18 @@ class Song(MusicTrack):
     Represents the music 
     """
 
-    # musician
+    # musician = contrustor
     def __init__(self,
                  artist: Artist,
                  album: Album,
-                 duration_seconds: float):
+                 duration_seconds: int):
         super().__init__(artist, album, duration_seconds)
 
     # specifying the abstract method
     def play_time_formatted(self) -> int:
         minutes = self._duration_seconds // 60
         seconds = self._duration_seconds % 60
-        return f"{minutes:02d}: {seconds:02d}"
+        return f"{minutes:02d}:{seconds:02d}"
     
     # printing song
     def __str__(self) -> str:

@@ -14,7 +14,8 @@ class Album:
         
         self._name = title
         self._active = active
-        self._years = list(years) # defensive copy
+        # defensive copy by creating a copy for usage instead of using the original
+        self._years = list(years) 
 
     @property
     def name(self) -> str:
