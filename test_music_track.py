@@ -10,7 +10,7 @@ from album import Album
 from music_track import MusicTrack
 from song import Song
 from podcast import Podcast
-# from garage import Garage
+from playlist import Playlist
 
 
 
@@ -256,3 +256,125 @@ class TestComparison:
         assert result[1].release_year == 2018
         assert result[2].release_year == 2020
  
+
+# Unit Testing for playlist.py
+class TestPlaylist:
+    @pytest.fixture
+    def full_playlist(self):
+        g = Playlist()
+        g.add_track(
+            Podcast(
+                Artist("Fordilex Accel", "USA"),
+                Album("Metal to the Pedal", True, [2020, 2021, 2022]),
+                5400,
+                is_explicit=False,
+            )
+        )
+        g.add_track(
+            Song(
+                Artist("Jun Pham", "V-pop"),
+                Album("Cupid Love", False, [1996, 1997, 1998]),
+                245,
+            )
+        )
+        g.add_track(
+            Song(
+                Artist("HOYOVERSE", "Internation"),
+                Album("Ripples of Past Reveries", False, [2026]),
+                330,
+            )
+        )
+        g.add_track(
+            Podcast(
+                Artist("miHOYO", "Internation"),
+                Album("Honkai Universe", False, [2024, 2025]),
+                9000,
+                is_explicit=True,
+            )
+        )
+        return g
+
+    def test_add_track(self):
+        g = Playlist()
+        assert len(g.tracks) == 0
+        g.add_track(
+            Song(
+                Artist("HOYOVERSE", "Internation"),
+                Album("Code of Chivalry", True, [2026]),
+                330,
+            )
+        )
+        assert len(g.tracks) == 1
+
+    def test_playlists_returns_copy(self):
+        """Changing the returned list should not have any affect"""
+        g = Playlist()
+        g.add_track(
+            Song(
+                Artist("Comlumbina", "Lullaby"),
+                Album("Birth of a Goddess", True, [2027]),
+                245,
+            )
+        )
+        external = g.tracks
+        external.clear()
+        assert len(g.tracks) == 1
+
+    def test_empty_playlist(self):
+        g = Playlist()
+        g.add_track(
+            Song(
+                Artist("Skirk", "Beyondy"),
+                Album("Solitude and Past", True, [2025]),
+                120,
+            )
+        )
+        g.clear_playlist()
+        assert len(g.tracks) == 0
+
+    def test_empty_playlist_does_not_set_none(self):
+        """After emptying, add_track should still work (list not None)."""
+        g = Playlist()
+        g.add_track(
+            Song(
+                Artist("HOYOVERSE", "Internation"),
+                Album("Code of Chivalry", True, [2026]),
+                330,
+            )
+        )
+        g.clear_playlist()
+        # If the internal list were None, this would raise an AttributeError
+        g.add_track(
+            Song(
+                Artist("Comlumbina", "Lullaby"),
+                Album("Birth of The Moon Goddess", True, [2027]),
+                245,
+            )
+        )
+        assert len(g.tracks) == 1
+
+    def test_sort_by_release_year(self, full_playlist):
+        full_playlist.sort_by_release_year()
+        tracks = full_playlist.tracks
+        years = [v.release_year for v in tracks]
+        assert years == sorted(years)
+
+    def test_sort_order_specific(self, full_playlist):
+        full_playlist.sort_by_release_year()
+        tracks = full_playlist.tracks
+        assert tracks[0].release_year == 1996
+        assert tracks[1].release_year == 2020
+        assert tracks[2].release_year == 2024
+        assert tracks[3].release_year == 2026
+
+    def test_str_contains_all_music_track(self, full_playlist):
+        s = str(full_playlist)
+        assert "Fordilex Accel" in s
+        assert "Jun Pham" in s
+        assert "HOYOVERSE" in s
+        assert "miHOYO" in s
+
+    def test_str_music_track_on_separate_lines(self, full_playlist):
+        s = str(full_playlist)
+        lines = s.strip().split("\n")
+        assert len(lines) == 4
