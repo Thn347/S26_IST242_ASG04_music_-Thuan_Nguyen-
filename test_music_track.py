@@ -257,7 +257,7 @@ class TestComparison:
         assert result[2].release_year == 2020
  
 
-# Unit Testing for playlist.py
+# Unit testing for playlist.py
 class TestPlaylist:
     @pytest.fixture
     def full_playlist(self):
@@ -378,3 +378,60 @@ class TestPlaylist:
         s = str(full_playlist)
         lines = s.strip().split("\n")
         assert len(lines) == 4
+
+
+# Unit testing for main.py
+class TestMain:
+
+    def test_full_workflow(self):
+        """Mirrors the main.py scenario end-to-end."""
+        genshin = Artist("HOYOVERSE", "Genshin Impact")
+        impact = Podcast(genshin, Album("The World of Teyvat", True, [2020, 2021, 2022]), 9000, is_explicit=True)
+
+        honkai = Artist("miHOYO", "Honkai Star Rail")
+        star_rail = Podcast(honkai, Album("Honkai Universe", True, [2023, 2024, 2025]), 9000, is_explicit=True)
+
+        cookie = Artist("Devister", "Cookie Run Kingdom")
+        run_kingdom = Song(cookie, Album("Everything you need", False, [2022]), 220)
+
+        frieren = Artist("Mrs. GREEN APPLE", "J-pop")
+        himmel = Song(frieren, Album("lulu", False, [2026]), 245)
+        
+        g = Playlist()
+        for v in [impact, star_rail, run_kingdom, himmel]:
+            g.add_track(v)
+
+        # Before sorting
+        before = g.tracks
+        assert before[0].album.name == "The World of Teyvat"
+        assert before[1].album.name == "Honkai Universe"
+        assert before[2].album.name == "Everything you need"
+        assert before[3].album.name == "lulu"
+
+        g.sort_by_release_year()
+
+        # After sorting
+        after = g.tracks
+        assert after[0].album.name == "The World of Teyvat"
+        assert after[1].album.name == "Everything you need"
+        assert after[2].album.name == "Honkai Universe"
+        assert after[3].album.name == "lulu"
+
+        # Verify types survived polymorphism
+        assert isinstance(after[0], Podcast)
+        assert isinstance(after[1], Song)
+        assert isinstance(after[2], Podcast)
+        assert isinstance(after[3], Song)
+
+        # Verify explicit status
+        assert after[0].is_explicit is True
+        assert after[2].is_explicit is True
+
+        # Verify play_time_formatted
+        assert after[0].play_time_formatted() == "02:30:00"   # Genshin Impact
+        assert after[1].play_time_formatted() == "03:40"      # Cookie Run Kingdom
+        assert after[2].play_time_formatted() == "02:30:00"   # Honkai Star Rail
+        assert after[3].play_time_formatted() == "04:05"      # Beyond the Journey's End
+
+        # Verify total_play_time
+        assert after[1].total_play_time(2) == 440
